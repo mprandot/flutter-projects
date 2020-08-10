@@ -68,54 +68,16 @@ class _HomeState extends State<Home> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Icon(Icons.monetization_on, size: 150.0, color: Colors.amber),
-                      TextField(
-                        style: TextStyle(
-                          color: Colors.amber,
-                          fontSize: 25.0
-                        ),
-                        decoration: InputDecoration(
-                          labelText: "Reais",
-                          border: OutlineInputBorder(),
-                          prefixText: "R\$",
-                          labelStyle: TextStyle(
-                            color: Colors.amber
-                          )
-                        ),
-                      ),
+
+                      buildTextField("Reais", "R\$"),
 
                       Divider(),
                       
-                      TextField(
-                        style: TextStyle(
-                          color: Colors.amber,
-                          fontSize: 25.0
-                        ),
-                        decoration: InputDecoration(
-                          labelText: "Dólar",
-                          border: OutlineInputBorder(),
-                          prefixText: "US\$",
-                          labelStyle: TextStyle(
-                            color: Colors.amber
-                          )
-                        ),
-                      ),
-                      
-                      Divider(),
+                      buildTextField("Dólar", "US\$"),
 
-                      TextField(
-                        style: TextStyle(
-                          color: Colors.amber,
-                          fontSize: 25.0
-                        ),
-                        decoration: InputDecoration(
-                          labelText: "Euro",
-                          border: OutlineInputBorder(),
-                          prefixText: "€",
-                          labelStyle: TextStyle(
-                            color: Colors.amber
-                          )
-                        ),
-                      )
+                      Divider(),
+                      
+                      buildTextField("Euro", "€")
                     ]
                   )
                 );
@@ -125,6 +87,23 @@ class _HomeState extends State<Home> {
       )
     );
   }
+}
+
+Widget buildTextField(String label, String prefix) {
+  return TextField(
+    style: TextStyle(
+      color: Colors.amber,
+      fontSize: 25.0
+    ),
+    decoration: InputDecoration(
+      labelText: label,
+      border: OutlineInputBorder(),
+      prefixText: prefix,
+      labelStyle: TextStyle(
+        color: Colors.amber
+      )
+    ),
+  );
 }
 
 Future<Map> getData() async {
