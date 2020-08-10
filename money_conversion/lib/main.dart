@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-const request = "https://api.hgbrasil.com/finance?format=json&key=e65cf9c8";
+Future main() async {
+  
+  await DotEnv().load('.env');
 
-void main() async {
   runApp(MaterialApp(
       theme: ThemeData(
         hintColor: Colors.amber,
@@ -126,6 +128,8 @@ class _HomeState extends State<Home> {
 }
 
 Future<Map> getData() async {
+  String apiKey = DotEnv().env['API_KEY'];
+  String request = "https://api.hgbrasil.com/finance?format=json&key=$apiKey";
   http.Response response = await http.get(request);
   return json.decode(response.body);
 }
