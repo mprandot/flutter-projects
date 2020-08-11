@@ -83,15 +83,36 @@ class _HomeState extends State<Home> {
           ),
 
           Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.only(top: 10.0),
-              itemCount: todos.length,
-              itemBuilder: buildItem
+            child: RefreshIndicator(
+              onRefresh: _refresh,
+              child: ListView.builder(
+                  padding: EdgeInsets.only(top: 10.0),
+                  itemCount: todos.length,
+                  itemBuilder: buildItem
+              ),
             ),
           )
         ],
       ),
     );
+  }
+
+
+  Future<Null> _refresh () async {
+
+    await Future.delayed(Duration(seconds: 1));
+
+    setState(() {
+      todos.sort((current, next){
+        if(current["ok"] && !next["ok"]) {
+          return 1;
+        } else if(!current["ok"] && next["ok"]) {
+          return -1;
+        } else return 0;
+      });
+      _saveData();
+    });
+
   }
 
   Widget buildItem (BuildContext context, int index) {
