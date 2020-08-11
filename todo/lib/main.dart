@@ -23,6 +23,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
 
   List todos = [];
+  Map<String, dynamic> lastRemoved;
+  int lastRemovedIndex;
 
   final inputController = TextEditingController();
 
@@ -92,7 +94,7 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget buildItem (context, index) {
+  Widget buildItem (BuildContext context, int index) {
     return Dismissible(
       key: Key(DateTime.now().millisecondsSinceEpoch.toString()),
       background: Container(
@@ -115,13 +117,36 @@ class _HomeState extends State<Home> {
             _saveData();
           });
         },
-      )
+      ),
+      onDismissed: (direction) {
+        setState(() {
+          lastRemoved = Map.from(todos[index]);
+          lastRemovedIndex = index;
+          todos.removeAt(index);
+          _saveData();
+          final snack = SnackBar(
+            duration: Duration(seconds: 3),
+            content: Text("Success! Item removed"),
+            action: SnackBarAction(
+              label: "Cancel",
+              onPressed: () {
+                setState(() {
+                  todos.insert(lastRemovedIndex, lastRemoved);
+                  _saveData();
+                });
+              },
+            ),
+          );
+
+          Scaffold.of(context).showSnackBar(snack);
+
+        });
+      },
     );
   }
 
   Future<File> _getFile () async {
     final directory = await getApplicationDocumentsDirectory();
-    print(directory);
     return File("${directory.path}/data.json");
   }
 
@@ -139,6 +164,5 @@ class _HomeState extends State<Home> {
       return null;
     }
   }
-
 }
 
