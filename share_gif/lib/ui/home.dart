@@ -11,6 +11,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   String _search;
   int _offset = 0;
+
   Future<Map> _getGifs() async {
     http.Response response;
 
@@ -18,43 +19,31 @@ class _HomeState extends State<Home> {
 
     print(apikey);
     if (_search == null) {
-      response = await http.get(
-          'https://api.giphy.com/v1/gifs/trending?api_key=$apikey&limit=25&rating=g');
+      response = await http.get('https://api.giphy.com/v1/gifs/trending?api_key=$apikey&limit=25&rating=g');
     } else {
-      response = await http.get(
-          'https://api.giphy.com/v1/gifs/search?api_key=$apikey&q=$_search&limit=25&offset=$_offset&rating=g&lang=pt');
+      response = await http.get('https://api.giphy.com/v1/gifs/search?api_key=$apikey&q=$_search&limit=19&offset=$_offset&rating=g&lang=pt');
     }
 
     return json.decode(response.body);
   }
 
   @override
-  void initState() {
-    super.initState();
-
-    // _getGifs().then((response) {
-    //   print(response);
-    // });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          centerTitle: true,
-          backgroundColor: Colors.black,
-          title: Image.network(
-              'https://developers.giphy.com/static/img/dev-logo-lg.7404c00322a8.gif')),
+      appBar: AppBar(centerTitle: true, backgroundColor: Colors.black, title: Image.network('https://developers.giphy.com/static/img/dev-logo-lg.7404c00322a8.gif')),
       backgroundColor: Colors.black,
       body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: TextField(
-              decoration: InputDecoration(
-                  labelText: "Pesquise aqui:",
-                  labelStyle: TextStyle(color: Colors.white),
-                  border: OutlineInputBorder()),
+              onSubmitted: (String value) {
+                setState(() {
+                  _search = value;
+                  _offset = 0;
+                });
+              },
+              decoration: InputDecoration(labelText: "Pesquise aqui:", labelStyle: TextStyle(color: Colors.white), border: OutlineInputBorder()),
               style: TextStyle(color: Colors.white, fontSize: 18.0),
               textAlign: TextAlign.center,
             ),
@@ -71,16 +60,13 @@ class _HomeState extends State<Home> {
                         height: 200.0,
                         alignment: Alignment.center,
                         child: CircularProgressIndicator(
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                           strokeWidth: 5.0,
                         ),
                       );
                     default:
-                      if (snapshot.hasError)
-                        return Container();
-                      else
-                        return _createGiftTable(context, snapshot);
+                      if (snapshot.hasError) return Container();
+                      else return _createGiftTable(context, snapshot);
                   }
                 }),
           )
@@ -89,18 +75,46 @@ class _HomeState extends State<Home> {
     );
   }
 
+  int _getCount(List data) {
+    if (_search == null) {
+      return data.length;
+    } else
+      return data.length + 1;
+  }
+
   Widget _createGiftTable(BuildContext context, AsyncSnapshot snapshot) {
     return GridView.builder(
-        padding: EdgeInsets.all(10.0),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2, crossAxisSpacing: 10.0, mainAxisSpacing: 10.0),
-        itemCount: snapshot.data["data"].length,
-        itemBuilder: (context, index) {
+      padding: EdgeInsets.all(10.0),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, crossAxisSpacing: 10.0, mainAxisSpacing: 10.0),
+      itemCount: _getCount(snapshot.data["data"]),
+      itemBuilder: (context, index) {
+        if (_search == null || index < snapshot.data["data"].length) {
           return GestureDetector(
-              child: Image.network(
-                  snapshot.data["data"][index]["images"]["fixed_height"]["url"],
-                  height: 300.0,
-                  fit: BoxFit.cover));
-        });
+            child: Image.network(
+              snapshot.data["data"][index]["images"]["fixed_height"]["url"], 
+              height: 300.0, 
+              fit: BoxFit.cover
+            )
+          );
+        } else {
+          return Container(
+            child: GestureDetector(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.add, color: Colors.white, size: 70.0), 
+                  Text("Load more...", style: TextStyle(color: Colors.white, fontSize: 22.0))
+                ],
+              ),
+              onTap: () {
+                setState(() {
+                  _offset += 19;
+                });
+              },
+            ),
+          );
+        }
+      }
+    );
   }
 }
