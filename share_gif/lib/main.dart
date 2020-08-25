@@ -7,5 +7,6 @@ Future main() async {
 
   runApp(MaterialApp(
     home: Home(),
+    theme: ThemeData(hintColor: Colors.white),
   ));
 }
