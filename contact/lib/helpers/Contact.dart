@@ -7,6 +7,8 @@ class Contact {
   String phone;
   String img;
 
+  Contact();
+
   Contact.fromMap(Map data) {
     id = data[idColumn];
     name = data[nameColumn];

@@ -24,7 +24,7 @@ class ContactDAO {
 
   Future<Database> initDb() async {
     final databasesPath = await getDatabasesPath();
-    final path = join(databasesPath, "contact.db");
+    final path = join(databasesPath, "contacts.db");
 
     return await openDatabase(path, version: 1,
         onCreate: (Database db, int newerVersion) async {
