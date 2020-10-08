@@ -17,18 +17,20 @@ class Contact {
 
   Map toMap() {
     Map<String, dynamic> data = {
-        nameColumn: name,
-        emailColumn: email,
-        phoneColumn: phone,
-        imgColumn: img
+      nameColumn: name,
+      emailColumn: email,
+      phoneColumn: phone,
+      imgColumn: img
     };
-    if(id != null){
+
+    if (id != null) {
       data[idColumn] = id;
     }
+
     return data;
   }
 
-  @override 
+  @override
   String toString() {
     return "Contact(id: $id, name: $name, email: $email, phone: $phone, image: $img)";
   }
