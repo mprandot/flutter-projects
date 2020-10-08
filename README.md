@@ -33,8 +33,3 @@ Trying to explain the maximum possible for new devs.
 ## Contact
 
 - Create a contact app with database persistence.
-- Use .env file and package to store API keys.
-- Use SnackBars, GestureDetector, FadeInImage, GridView and more.
-- Use navigator to view gif detail.
-- Use device native method to share gif link in many places.
-
