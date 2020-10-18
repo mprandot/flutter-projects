@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:contact/helpers/Contact.dart';
 import 'package:contact/helpers/contact_dao.dart';
+import 'package:contact/ui/contact_page.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -16,11 +17,15 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    _getAllContacts();
+  }
+
+  _getAllContacts() {
     database.getAllContacts()
-    .then((list) => 
-      setState(() {
-        contacts = list;
-      })
+        .then((list) =>
+        setState(() {
+          contacts = list;
+        })
     );
   }
 
@@ -36,7 +41,9 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         backgroundColor: Colors.red,
-        onPressed: (){},
+        onPressed: (){
+          _showContactPage();
+        },
       ),
       body: ListView.builder(
         padding: EdgeInsets.all(10),
@@ -53,6 +60,9 @@ class _HomePageState extends State<HomePage> {
     Contact contact = contacts[index];
 
     return GestureDetector(
+      onTap: () {
+        _showContactPage(contact: contact);
+      },
       child: Card(
         child: Padding(
           padding: EdgeInsets.all(10),
@@ -79,11 +89,26 @@ class _HomePageState extends State<HomePage> {
                     Text(contact.email ?? "", style: TextStyle(fontSize: 18.0)),
                     Text(contact.phone ?? "", style: TextStyle(fontSize: 18.0)),
                   ])
-              )        
+              )
             ],
           ),
         ),
       ),
     );
+  }
+
+  void _showContactPage ({Contact contact}) async {
+    final newContact = await Navigator.push(context,
+      MaterialPageRoute(builder: (context) => ContactPage(contact: contact))
+    );
+
+    if(newContact != null ) {
+      if(contact != null) {
+        await database.updateContact(newContact);
+      } else {
+        await database.saveContact(newContact);
+      }
+      _getAllContacts();
+    }
   }
 }
