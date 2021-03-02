@@ -33,3 +33,7 @@ Trying to explain the maximum possible for new devs.
 ## Contact
 
 - Create a contact app with database persistence.
+
+## Bytebank database
+
+- Create a bank contact app with sqflite database persistence.

@@ -11,8 +11,14 @@ class ContactsList extends StatefulWidget {
 class _ContactsListState extends State<ContactsList> {
   final ContactDao _dao = ContactDao();
 
+
   @override
   Widget build(BuildContext context) {
+
+    Function updateParent = () {
+      setState(() {});
+    };
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Contacts'),
@@ -42,8 +48,7 @@ class _ContactsListState extends State<ContactsList> {
               final List<Contact> contacts = snapshot.data;
               return ListView.builder(
                 itemBuilder: (context, index) {
-                  final Contact contact = contacts[index];
-                  return _ContactItem(contact);
+                  return _GenerateListItem(contacts[index], updateParent);
                 },
                 itemCount: contacts.length,
               );
@@ -57,7 +62,7 @@ class _ContactsListState extends State<ContactsList> {
           Navigator.of(context)
               .push(
                 MaterialPageRoute(
-                  builder: (context) => ContactForm(),
+                  builder: (context) => ContactForm(contact: null),
                 ),
               )
               .then(
@@ -72,25 +77,34 @@ class _ContactsListState extends State<ContactsList> {
   }
 }
 
-class _ContactItem extends StatelessWidget {
+class _GenerateListItem extends StatelessWidget {
   final Contact contact;
+  final Function updateParent;
 
-  _ContactItem(this.contact);
+  _GenerateListItem(this.contact, this.updateParent);
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        title: Text(
-          contact.name,
-          style: TextStyle(
-            fontSize: 24.0,
+    return 
+    GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => ContactForm(contact: contact)),
+        ).then((value) => updateParent());
+      },
+      child: Card(
+        child: ListTile(
+          title: Text(
+            contact.name,
+            style: TextStyle(
+              fontSize: 24.0,
+            ),
           ),
-        ),
-        subtitle: Text(
-          contact.accountNumber.toString(),
-          style: TextStyle(
-            fontSize: 16.0,
+          subtitle: Text(
+            contact.accountNumber.toString(),
+            style: TextStyle(
+              fontSize: 16.0,
+            ),
           ),
         ),
       ),

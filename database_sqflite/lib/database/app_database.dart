@@ -9,6 +9,8 @@ Future<Database> getDatabase() async {
     onCreate: (db, version) {
       db.execute(ContactDao.tableSql);
     },
+    // onUpgrade: (db, oldVersion, newVersion) {
+    // },
     version: 1,
   );
 }

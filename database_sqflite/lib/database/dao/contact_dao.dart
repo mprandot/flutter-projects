@@ -16,8 +16,13 @@ class ContactDao {
   static const String _accountNumber = 'account_number';
 
   Future<int> save(Contact contact) async {
+
     final Database db = await getDatabase();
     Map<String, dynamic> contactMap = _toMap(contact);
+
+    if(contact.id != null) {
+      return db.update(_tableName, contactMap, where: '$_id = ?', whereArgs: [contact.id] );
+    }
     return db.insert(_tableName, contactMap);
   }
 
