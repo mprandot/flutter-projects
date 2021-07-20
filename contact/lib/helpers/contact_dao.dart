@@ -75,7 +75,7 @@ class ContactDAO {
   Future<List> getAllContacts() async {
     Database database = await db;
     List<Map> data = await database.rawQuery("SELECT * FROM $contactTable");
-    List<Contact> contacts = List();
+    List<Contact> contacts = [];
     for(Map _contact in data) {
       contacts.add(Contact.fromMap(_contact));
     }

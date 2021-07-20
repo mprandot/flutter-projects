@@ -12,7 +12,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   
   ContactDAO database = ContactDAO(); 
-  List<Contact> contacts = List();
+  List<Contact> contacts = [];
 
   @override
   void initState() {
